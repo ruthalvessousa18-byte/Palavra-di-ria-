@@ -1,249 +1,300 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Palavra Diária</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palavra Diária</title>
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#C8A2C8">
+  <link rel="apple-touch-icon" href="icon-192.png">
 
-body{
-    font-family:Arial, Helvetica, sans-serif;
-    background:#0d0d0d;
-    color:#ffffff;
-    min-height:100vh;
-}
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-header{
-    background:#1a1a1a;
-    padding:20px;
-    text-align:center;
-    box-shadow:0 2px 10px rgba(0,0,0,0.5);
-}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(180deg, #C8A2C8 0%, #E6D7E6 100%);
+      min-height: 100vh;
+      padding: 20px 16px;
+      color: #2d2d2d;
+    }
 
-header h1{
-    font-size:28px;
-}
+  .header {
+      text-align: center;
+      margin-bottom: 24px;
+      color: white;
+    }
 
-header p{
-    margin-top:8px;
-    color:#cccccc;
-}
+  .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
 
-.container{
-    max-width:500px;
-    margin:auto;
-    padding:20px;
-}
+  .header.small {
+      font-size: 14px;
+      opacity: 0.9;
+    }
 
-.card{
-    background:#1c1c1c;
-    padding:20px;
-    border-radius:16px;
-    margin-bottom:20px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.4);
-}
+  .card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
 
-.card h2{
-    margin-bottom:15px;
-    font-size:20px;
-    color:#ffffff;
-}
+  .card.small {
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
 
-.card p{
-    line-height:1.7;
-    color:#e8e8e8;
-}
+  .vers {
+      margin: 16px 0;
+    }
 
-button{
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    background:#ffffff;
-    color:#000000;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-    margin-top:10px;
-}
+  .txt {
+      font-size: 20px;
+      line-height: 1.6;
+      color: #2d2d2d;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
 
-button:hover{
-    background:#dddddd;
-}
+  .ref {
+      font-size: 14px;
+      color: #C8A2C8;
+      font-weight: 600;
+    }
 
-textarea{
-    width:100%;
-    height:120px;
-    border:none;
-    border-radius:12px;
-    padding:12px;
-    font-size:15px;
-    resize:none;
-}
+  .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
 
-footer{
-    text-align:center;
-    padding:20px;
-    color:#999999;
-    font-size:14px;
-}
-</style>
-</head>
+  .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-<body>
+  .btn-primary {
+      background: #C8A2C8;
+      color: white;
+    }
 
-<header>
-    <h1>📖 Palavra Diária</h1>
-    <p id="dataAtual"></p>
-</header>
+  .btn-primary:active {
+      transform: scale(0.95);
+    }
 
-<div class="container">
+  .btn-secondary {
+      background: #F5F5F5;
+      color: #666;
+    }
 
-    <div class="card">
-        <h2>Versículo do Dia</h2>
-        <p id="versiculo"></p>
-    </div>
+  .smallcards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
+    }
 
-    <div class="card">
-        <h2>Oração do Dia</h2>
-        <p id="oracao"></p>
-    </div>
+  .smallcard {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
 
-    <div class="card">
-        <h2>Pedido de Oração 🙏</h2>
-        <textarea id="pedido" placeholder="Digite seu pedido de oração..."></textarea>
-        <button onclick="salvarPedido()">Enviar Pedido</button>
-        <p id="mensagem" style="margin-top:10px;"></p>
-    </div>
+  .smallcard:active {
+      transform: scale(0.96);
+    }
 
-    <div class="card">
-        <button onclick="carregarConteudo()">Atualizar Palavra</button>
-    </div>
+  .smallcard.icon {
+      font-size: 28px;
+    }
 
-</div>
+  .smallcard h5 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2d2d2d;
+      margin-bottom: 2px;
+    }
 
-<footer>
-Feito com Fé ❤️
-</footer>
+  .smallcard.small {
+      font-size: 11px;
+      color: #999;
+      text-transform: none;
+      letter-spacing: 0;
+    }
 
-<script>
-const palavras = [
-{
-versiculo:"Salmos 23:1 - O Senhor é o meu pastor; nada me faltará.",
-oracao:"Senhor, guia meus passos neste dia e cuida de tudo em minha vida. Amém."
-},
-{
-versiculo:"Filipenses 4:13 - Tudo posso naquele que me fortalece.",
-oracao:"Pai, fortalece meu coração para vencer os desafios de hoje. Amém."
-},
-{
-versiculo:"Mateus 6:34 - Não se preocupem com o amanhã.",
-oracao:"Deus, entrego minhas ansiedades em Tuas mãos. Dá-me paz. Amém."
-},
-{
-versiculo:"Isaías 41:10 - Não temas, porque Eu sou contigo.",
-oracao:"Senhor, tira todo medo e enche meu coração de coragem. Amém."
-},
-{
-versiculo:"Provérbios 3:5 - Confia no Senhor de todo o teu coração.",
-oracao:"Pai, ensina-me a confiar mais em Ti e descansar em Tua vontade. Amém."
-},
-{
-versiculo:"Romanos 8:28 - Todas as coisas cooperam para o bem.",
-oracao:"Obrigado Deus, pois sei que estás cuidando de tudo. Amém."
-},
-{
-versiculo:"Josué 1:9 - Seja forte e corajoso.",
-oracao:"Senhor, renova minhas forças para continuar lutando. Amém."
-}
-];
+  .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2d2d2d;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      opacity: 0;
+      transition: 0.3s;
+      pointer-events: none;
+    }
 
-function carregarConteudo(){
-let hoje = new Date();
-let indice = hoje.getDate() % palavras.length;
-
-document.getElementById("versiculo").innerText = palavras[indice].versiculo;
-document.getElementById("oracao").innerText = palavras[indice].oracao;
-document.getElementById("dataAtual").innerText =
-"Hoje: " + hoje.toLocaleDateString("pt-BR");
-}
-
-function salvarPedido(){
-let pedido = document.getElementById("pedido").value.trim();
-
-if(pedido === ""){
-document.getElementById("mensagem").innerText =
-"Digite seu pedido primeiro.";
-return;
-}
-
-localStorage.setItem("pedido_oracao", pedido);
-
-document.getElementById("mensagem").innerText =
-"Pedido enviado com sucesso 🙏";
-
-document.getElementById("pedido").value = "";
-}
-
-window.onload = carregarConteudo;
-</script>
-
-</body>
-</html>
-<!DOCTYPE html><html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Daily Word App</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;background:linear-gradient(180deg,#4c6ef5,#9c6bff);min-height:100vh;color:#fff} .phone{max-width:420px;margin:0 auto;min-height:100vh;padding:18px;display:flex;flex-direction:column;gap:16px}.top{display:flex;justify-content:space-between;align-items:center;padding-top:10px}.avatar{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center}.title{font-size:28px;font-weight:700}.subtitle{opacity:.9;font-size:14px}.card{background:rgba(255,255,255,.14);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:18px;box-shadow:0 10px 25px rgba(0,0,0,.15)}.verse{font-size:22px;font-weight:700;line-height:1.3;margin-bottom:10px}.ref{opacity:.85;font-size:14px}.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{background:#fff;color:#5a44ff;border:none;border-radius:18px;padding:14px;font-weight:700;font-size:15px}.section{font-size:18px;font-weight:700;margin-top:4px}.smallcards{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mini{padding:16px;border-radius:20px;background:#fff;color:#222}.mini h4{font-size:15px;margin-bottom:8px}.mini p{font-size:13px;color:#666}.nav{margin-top:auto;background:rgba(255,255,255,.16);border-radius:22px;padding:14px;display:flex;justify-content:space-around}.nav span{font-size:22px}
-</style>
+  .toast.show {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
-<div class="phone">
-<div class="top">
-<div>
-<div class="subtitle">Good Morning</div>
-<div class="title">Daily Word</div>
-</div>
-<div class="avatar">❤</div>
-</div><div class="card">
-<div class="subtitle">Word of the Day</div>
-<div class="verse">"The Lord is my shepherd; I shall not want."</div>
-<div class="ref">Psalm 23:1</div>
-</div><div class="btnrow">
-<button class="btn">Listen</button>
-<button class="btn">Share</button>
-</div><div class="section">Today's Inspiration</div>
-<div class="smallcards">
-<div class="mini">
-<h4>Prayer</h4>
-<p>Start your day with gratitude and peace.</p>
-</div>
-<div class="mini">
-<h4>Devotional</h4>
-<p>A short reflection to strengthen faith.</p>
-</div>
-<div class="mini">
-<h4>Favorites</h4>
-<p>Save your favorite verses here.</p>
-</div>
-<div class="mini">
-<h4>Random Verse</h4>
-<p>Receive a special word anytime.</p>
-</div>
-</div><div class="nav">
-<span>🏠</span>
-<span>📖</span>
-<span>🔔</span>
-<span>⚙️</span>
-</div>
-</div>
+  <div class="header">
+    <h1>Palavra Diária</h1>
+    <p class="small">Sua dose diária de fé</p>
+  </div>
+
+  <!-- Card Principal - Palavra do Dia -->
+  <div class="card">
+    <p class="small">Palavra do Dia</p>
+    <div class="vers">
+      <div class="txt" id="versiculoTexto">
+        "O Senhor é o meu pastor; de nada terei falta."
+      </div>
+      <div class="ref" id="versiculoRef">Salmos 23:1</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="compartilhar()">
+        Compartilhar
+      </button>
+      <button class="btn btn-secondary" onclick="ouvir()">
+        Ouvir
+      </button>
+    </div>
+  </div>
+
+  <!-- Botões Pequenos -->
+  <div class="smallcards">
+    <div class="smallcard" onclick="novaPalavra()">
+      <div class="icon">📖</div>
+      <div>
+        <h5>Versículo Aleatório</h5>
+        <p class="small" id="previewVerso">Toque para nova palavra</p>
+      </div>
+    </div>
+
+    <div class="smallcard" onclick="mostrarToast('Em breve!')">
+      <div class="icon">🙏</div>
+      <div>
+        <h5>Oração</h5>
+        <p class="small">Fale com Deus</p>
+      </div>
+    </div>
+
+    <div class="smallcard" onclick="mostrarToast('Em breve!')">
+      <div class="icon">✨</div>
+      <div>
+        <h5>Devocional</h5>
+        <p class="small">Reflexão do dia</p>
+      </div>
+    </div>
+
+    <div class="smallcard" onclick="mostrarToast('Em breve!')">
+      <div class="icon">⭐</div>
+      <div>
+        <h5>Favoritos</h5>
+        <p class="small">Salvos</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Banco de Versículos em Português - NVI
+    const devocionais = [
+      { verso: "O Senhor é o meu pastor; de nada terei falta.", ref: "Salmos 23:1" },
+      { verso: "Tudo posso naquele que me fortalece.", ref: "Filipenses 4:13" },
+      { verso: "Aquietai-vos e sabei que eu sou Deus.", ref: "Salmos 46:10" },
+      { verso: "Porque sou eu que conheço os planos que tenho para vocês, diz o Senhor.", ref: "Jeremias 29:11" },
+      { verso: "Lancem sobre ele toda a sua ansiedade, porque ele tem cuidado de vocês.", ref: "1 Pedro 5:7" },
+      { verso: "A alegria do Senhor é a nossa força.", ref: "Neemias 8:10" },
+      { verso: "Confie no Senhor de todo o seu coração.", ref: "Provérbios 3:5" },
+      { verso: "Não tema, pois eu estou com você.", ref: "Isaías 41:10" },
+      { verso: "Façam tudo com amor.", ref: "1 Coríntios 16:14" },
+      { verso: "Este é o dia que o Senhor fez; regozijemo-nos e alegremo-nos nele.", ref: "Salmos 118:24" },
+      { verso: "Entregue o seu caminho ao Senhor; confie nele, e ele agirá.", ref: "Salmos 37:5" },
+      { verso: "O choro pode durar uma noite, mas a alegria vem pela manhã.", ref: "Salmos 30:5" }
+    ];
+
+    let ultimoIndex = -1;
+    let versoAtual = devocionais[0];
+
+    // Gera nova palavra
+    function novaPalavra() {
+      let novoIndex;
+      do {
+        novoIndex = Math.floor(Math.random() * devocionais.length);
+      } while (novoIndex === ultimoIndex && devocionais.length > 1);
+
+      ultimoIndex = novoIndex;
+      versoAtual = devocionais[novoIndex];
+
+      document.getElementById("versiculoTexto").innerText = `"${versoAtual.verso}"`;
+      document.getElementById("versiculoRef").innerText = versoAtual.ref;
+      document.getElementById("previewVerso").innerText = versoAtual.ref;
+    }
+
+    // Compartilhar no WhatsApp
+    function compartilhar() {
+      const texto = `"${versoAtual.verso}" - ${versoAtual.ref}\n\nEnviado pelo app Palavra Diária 🙏`;
+      const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+      window.open(url, '_blank');
+    }
+
+    // Ouvir com voz do celular em Português
+    function ouvir() {
+      if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance(`${versoAtual.verso}. ${versoAtual.ref}`);
+        msg.lang = 'pt-BR';
+        speechSynthesis.speak(msg);
+      } else {
+        mostrarToast('Seu navegador não suporta áudio');
+      }
+    }
+
+    // Toast simples
+    function mostrarToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Carrega ao abrir
+    novaPalavra();
+
+    // PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
 </body>
 </html>
